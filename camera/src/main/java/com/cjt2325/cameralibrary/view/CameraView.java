@@ -15,6 +15,8 @@ public interface CameraView {
 
     void confirmState(int type);
 
+    void cropRequest(int type);
+
     void showPicture(Bitmap bitmap, boolean isVertical);
 
     void playVideo(Bitmap firstFrame, String url);

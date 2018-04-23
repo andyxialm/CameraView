@@ -19,7 +19,7 @@ public interface State {
 
     void stop();
 
-    void foucs(float x, float y, CameraInterface.FocusCallback callback);
+    void focus(float x, float y, CameraInterface.FocusCallback callback);
 
     void swtich(SurfaceHolder holder, float screenProp);
 
@@ -31,9 +31,11 @@ public interface State {
 
     void stopRecord(boolean isShort, long time);
 
-    void cancle(SurfaceHolder holder, float screenProp);
+    void cancel(SurfaceHolder holder, float screenProp);
 
     void confirm();
+
+    void crop();
 
     void zoom(float zoom, int type);
 

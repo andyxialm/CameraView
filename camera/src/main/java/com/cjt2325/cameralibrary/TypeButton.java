@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
 import android.view.View;
+import android.widget.ImageView;
 
 /**
  * =====================================
@@ -16,9 +17,10 @@ import android.view.View;
  * 描    述：拍照或录制完成后弹出的确认和返回按钮
  * =====================================
  */
-public class TypeButton extends View{
+public class TypeButton extends ImageView {
     public static final int TYPE_CANCEL = 0x001;
     public static final int TYPE_CONFIRM = 0x002;
+    public static final int TYPE_CROP = 0x003;
     private int button_type;
     private int button_size;
 
@@ -61,7 +63,7 @@ public class TypeButton extends View{
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        //如果类型为取消，则绘制内部为返回箭头
+        /*//如果类型为取消，则绘制内部为返回箭头
         if (button_type == TYPE_CANCEL) {
             mPaint.setAntiAlias(true);
             mPaint.setColor(0xEEDCDCDC);
@@ -104,6 +106,6 @@ public class TypeButton extends View{
             path.lineTo(center_X - button_size / 21.2f, center_Y + button_size / 9.4f);
             path.close();
             canvas.drawPath(path, mPaint);
-        }
+        }*/
     }
 }

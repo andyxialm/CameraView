@@ -74,6 +74,16 @@ public class CameraActivity extends AppCompatActivity {
                 setResult(101, intent);
                 finish();
             }
+
+            @Override
+            public void onCropImageRequest(Bitmap bitmap) {
+
+            }
+
+            @Override
+            public void onCropVideoRequest(String url, Bitmap firstFrame) {
+
+            }
         });
 
         jCameraView.setLeftClickListener(new ClickListener() {

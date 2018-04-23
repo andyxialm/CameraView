@@ -36,7 +36,7 @@ public class BorrowPictureState implements State {
 
 
     @Override
-    public void foucs(float x, float y, CameraInterface.FocusCallback callback) {
+    public void focus(float x, float y, CameraInterface.FocusCallback callback) {
     }
 
     @Override
@@ -64,7 +64,7 @@ public class BorrowPictureState implements State {
     }
 
     @Override
-    public void cancle(SurfaceHolder holder, float screenProp) {
+    public void cancel(SurfaceHolder holder, float screenProp) {
         CameraInterface.getInstance().doStartPreview(holder, screenProp);
         machine.getView().resetState(JCameraView.TYPE_PICTURE);
         machine.setState(machine.getPreviewState());
@@ -73,6 +73,12 @@ public class BorrowPictureState implements State {
     @Override
     public void confirm() {
         machine.getView().confirmState(JCameraView.TYPE_PICTURE);
+        machine.setState(machine.getPreviewState());
+    }
+
+    @Override
+    public void crop() {
+        machine.getView().cropRequest(JCameraView.TYPE_PICTURE);
         machine.setState(machine.getPreviewState());
     }
 

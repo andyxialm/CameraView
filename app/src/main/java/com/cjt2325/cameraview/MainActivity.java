@@ -16,10 +16,13 @@ import android.widget.Toast;
 
 import com.cjt2325.cameralibrary.JCameraView;
 import com.cjt2325.cameralibrary.listener.JCameraListener;
+import com.cjt2325.cameralibrary.listener.OnBackClickListener;
 
 import java.io.File;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG = MainActivity.class.getSimpleName();
+
     private final int GET_PERMISSION_REQUEST = 100; //权限申请自定义码
     private JCameraView jCameraView;
     private boolean granted = false;
@@ -44,9 +47,34 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void recordSuccess(String url, Bitmap firstFrame) {
+                Log.i("JCameraView", "url = " + url);
+            }
 
+            @Override
+            public void onCropImageRequest(Bitmap bitmap) {
+                Log.i("JCameraView", "bitmap = " + bitmap.getWidth());
+            }
+
+            @Override
+            public void onCropVideoRequest(String url, Bitmap firstFrame) {
+                Log.i("JCameraView", "url = " + url);
             }
         });
+
+        // 关闭自动闪光灯
+        jCameraView.disableFlashAuto();
+
+        // 顶部 back 监听
+        jCameraView.setOnBackClickListener(new OnBackClickListener() {
+            @Override
+            public void onClickBackBtn() {
+                Log.d(TAG, "Clicked the back button!");
+            }
+        });
+
+        // 视频模式 禁用裁切按钮
+        jCameraView.disableCropButtonOnVideoMode(true);
+
         //6.0动态权限获取
         getPermissions();
     }

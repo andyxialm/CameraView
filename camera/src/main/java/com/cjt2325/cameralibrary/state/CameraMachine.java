@@ -77,8 +77,8 @@ public class CameraMachine implements State {
     }
 
     @Override
-    public void foucs(float x, float y, CameraInterface.FocusCallback callback) {
-        state.foucs(x, y, callback);
+    public void focus(float x, float y, CameraInterface.FocusCallback callback) {
+        state.focus(x, y, callback);
     }
 
     @Override
@@ -107,13 +107,18 @@ public class CameraMachine implements State {
     }
 
     @Override
-    public void cancle(SurfaceHolder holder, float screenProp) {
-        state.cancle(holder, screenProp);
+    public void cancel(SurfaceHolder holder, float screenProp) {
+        state.cancel(holder, screenProp);
     }
 
     @Override
     public void confirm() {
         state.confirm();
+    }
+
+    @Override
+    public void crop() {
+        state.crop();
     }
 
 

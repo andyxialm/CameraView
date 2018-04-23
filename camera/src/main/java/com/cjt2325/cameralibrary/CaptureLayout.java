@@ -36,6 +36,7 @@ public class CaptureLayout extends FrameLayout {
     private TypeListener typeLisenter;          //拍照或录制后接结果按钮监听
     private ReturnListener returnListener;      //退出按钮监听
     private ClickListener leftClickListener;    //左边按钮监听
+    private ClickListener centerClickListener;  //中间按钮监听
     private ClickListener rightClickListener;   //右边按钮监听
 
     public void setTypeLisenter(TypeListener typeLisenter) {
@@ -52,10 +53,12 @@ public class CaptureLayout extends FrameLayout {
 
     private CaptureButton btn_capture;      //拍照按钮
     private TypeButton btn_confirm;         //确认按钮
+    private TypeButton btn_crop;            //裁切按钮
     private TypeButton btn_cancel;          //取消按钮
     private ReturnButton btn_return;        //返回按钮
     private ImageView iv_custom_left;            //左边自定义按钮
     private ImageView iv_custom_right;            //右边自定义按钮
+    private ImageView iv_custom_center;           //中间自定义按钮
     private TextView txt_tip;               //提示文本
 
     private int layout_width;
@@ -63,8 +66,10 @@ public class CaptureLayout extends FrameLayout {
     private int button_size;
     private int iconLeft = 0;
     private int iconRight = 0;
+    private int iconCenter = 0;
 
     private boolean isFirst = true;
+    private boolean disableCropButtonOnVideoMode;
 
     public CaptureLayout(Context context) {
         this(context, null);
@@ -104,6 +109,7 @@ public class CaptureLayout extends FrameLayout {
         iv_custom_right.setVisibility(GONE);
         btn_cancel.setVisibility(GONE);
         btn_confirm.setVisibility(GONE);
+        btn_crop.setVisibility(GONE);
     }
 
     public void startTypeBtnAnimator() {
@@ -117,8 +123,14 @@ public class CaptureLayout extends FrameLayout {
         btn_capture.setVisibility(GONE);
         btn_cancel.setVisibility(VISIBLE);
         btn_confirm.setVisibility(VISIBLE);
+        btn_crop.setVisibility(VISIBLE);
+        if (disableCropButtonOnVideoMode) {
+            btn_crop.setVisibility(GONE);
+        }
+
         btn_cancel.setClickable(false);
         btn_confirm.setClickable(false);
+        btn_crop.setClickable(false);
         ObjectAnimator animator_cancel = ObjectAnimator.ofFloat(btn_cancel, "translationX", layout_width / 4, 0);
         ObjectAnimator animator_confirm = ObjectAnimator.ofFloat(btn_confirm, "translationX", -layout_width / 4, 0);
 
@@ -130,6 +142,7 @@ public class CaptureLayout extends FrameLayout {
                 super.onAnimationEnd(animation);
                 btn_cancel.setClickable(true);
                 btn_confirm.setClickable(true);
+                btn_crop.setClickable(true);
             }
         });
         set.setDuration(200);
@@ -208,6 +221,25 @@ public class CaptureLayout extends FrameLayout {
 //                resetCaptureLayout();
             }
         });
+        btn_cancel.setImageResource(R.mipmap.ic_back);
+
+        //裁切按钮
+        btn_crop = new TypeButton(getContext(), TypeButton.TYPE_CROP, button_size);
+        LayoutParams btn_crop_param = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        btn_crop_param.gravity = Gravity.CENTER_VERTICAL;
+        btn_crop_param.setMargins((layout_width / 2) - button_size / 2, 0, 0, 0);
+        btn_crop.setLayoutParams(btn_crop_param);
+        btn_crop.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (typeLisenter != null) {
+                    typeLisenter.crop();
+                }
+                startAlphaAnimation();
+//                resetCaptureLayout();
+            }
+        });
+        btn_crop.setImageResource(R.mipmap.ic_crop);
 
         //确认按钮
         btn_confirm = new TypeButton(getContext(), TypeButton.TYPE_CONFIRM, button_size);
@@ -225,6 +257,7 @@ public class CaptureLayout extends FrameLayout {
 //                resetCaptureLayout();
             }
         });
+        btn_confirm.setImageResource(R.mipmap.ic_confirm);
 
         //返回按钮
         btn_return = new ReturnButton(getContext(), (int) (button_size / 2.5f));
@@ -240,6 +273,22 @@ public class CaptureLayout extends FrameLayout {
                 }
             }
         });
+
+        // 中间自定义按钮
+        iv_custom_center = new ImageView(getContext());
+        LayoutParams iv_custom_param_center = new LayoutParams((int) (button_size / 2.5f), (int) (button_size / 2.5f));
+        iv_custom_param_center.gravity = Gravity.CENTER_VERTICAL;
+        iv_custom_param_center.setMargins(0, 0, 0, 0);
+        iv_custom_center.setLayoutParams(iv_custom_param_center);
+        iv_custom_center.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (centerClickListener != null) {
+                    centerClickListener.onClick();
+                }
+            }
+        });
+
         //左边自定义按钮
         iv_custom_left = new ImageView(getContext());
         LayoutParams iv_custom_param_left = new LayoutParams((int) (button_size / 2.5f), (int) (button_size / 2.5f));
@@ -282,7 +331,9 @@ public class CaptureLayout extends FrameLayout {
         this.addView(btn_capture);
         this.addView(btn_cancel);
         this.addView(btn_confirm);
-        this.addView(btn_return);
+        this.addView(btn_crop);
+        // 业务不需要底部的返回 button
+        //this.addView(btn_return);
         this.addView(iv_custom_left);
         this.addView(iv_custom_right);
         this.addView(txt_tip);
@@ -296,6 +347,7 @@ public class CaptureLayout extends FrameLayout {
         btn_capture.resetState();
         btn_cancel.setVisibility(GONE);
         btn_confirm.setVisibility(GONE);
+        btn_crop.setVisibility(GONE);
         btn_capture.setVisibility(VISIBLE);
         if (this.iconLeft != 0)
             iv_custom_left.setVisibility(VISIBLE);
@@ -338,9 +390,10 @@ public class CaptureLayout extends FrameLayout {
         txt_tip.setVisibility(VISIBLE);
     }
 
-    public void setIconSrc(int iconLeft, int iconRight) {
+    public void setIconSrc(int iconLeft, int iconRight, int iconCenter) {
         this.iconLeft = iconLeft;
         this.iconRight = iconRight;
+        this.iconCenter = iconCenter;
         if (this.iconLeft != 0) {
             iv_custom_left.setImageResource(iconLeft);
             iv_custom_left.setVisibility(VISIBLE);
@@ -355,6 +408,23 @@ public class CaptureLayout extends FrameLayout {
         } else {
             iv_custom_right.setVisibility(GONE);
         }
+
+        if (this.iconCenter != 0) {
+            iv_custom_center.setImageResource(iconCenter);
+            iv_custom_center.setVisibility(VISIBLE);
+        } else {
+            iv_custom_center.setVisibility(GONE);
+        }
+    }
+
+    /**
+     * 视频模式，停用裁切按钮
+     */
+    public void disableCropButtonOnVideoMode(boolean disable) {
+        disableCropButtonOnVideoMode = disable;
+        if (btn_crop != null) {
+            btn_crop.setVisibility(GONE);
+        }
     }
 
     public void setLeftClickListener(ClickListener leftClickListener) {
@@ -363,5 +433,9 @@ public class CaptureLayout extends FrameLayout {
 
     public void setRightClickListener(ClickListener rightClickListener) {
         this.rightClickListener = rightClickListener;
+    }
+
+    public void setCenterClickListener(ClickListener centerClickListener) {
+        this.centerClickListener = centerClickListener;
     }
 }

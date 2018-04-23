@@ -17,22 +17,22 @@ import com.cjt2325.cameralibrary.util.ScreenUtils;
  * 描    述：对焦框
  * =====================================
  */
-public class FoucsView extends View {
+public class FocusView extends View {
     private int size;
     private int center_x;
     private int center_y;
     private int length;
     private Paint mPaint;
 
-    public FoucsView(Context context) {
+    public FocusView(Context context) {
         this(context, null);
     }
 
-    public FoucsView(Context context, @Nullable AttributeSet attrs) {
+    public FocusView(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public FoucsView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public FocusView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.size = ScreenUtils.getScreenWidth(context) / 3;
         mPaint = new Paint();

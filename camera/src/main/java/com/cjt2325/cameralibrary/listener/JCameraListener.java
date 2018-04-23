@@ -16,4 +16,17 @@ public interface JCameraListener {
 
     void recordSuccess(String url, Bitmap firstFrame);
 
+    /**
+     * 申请图片裁切
+     * @param bitmap bitmap
+     */
+    void onCropImageRequest(Bitmap bitmap);
+
+    /**
+     * 申请视频裁切
+     * @param url 本地路径
+     * @param firstFrame 第一帧图像
+     */
+    void onCropVideoRequest(String url, Bitmap firstFrame);
+
 }
