@@ -204,6 +204,10 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
                 machine.swtich(mVideoView.getHolder(), screenProp);
             }
         });
+
+        // 显示默认文案
+        mCaptureLayout.setTextWithAnimation(R.mipmap.ic_tip);
+
         //拍照 录像
         mCaptureLayout.setCaptureLisenter(new CaptureListener() {
             @Override
@@ -216,6 +220,7 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
 
             @Override
             public void recordStart() {
+                mCaptureLayout.setTextWithAnimation(R.mipmap.ic_record_duration_tip);
                 mCaptureLayout.disableCropButtonOnVideoMode(true);
                 mSwitchCamera.setVisibility(INVISIBLE);
                 mFlashLamp.setVisibility(INVISIBLE);
@@ -225,7 +230,7 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
             @Override
             public void recordShort(final long time) {
                 mCaptureLayout.disableCropButtonOnVideoMode(true);
-                mCaptureLayout.setTextWithAnimation("录制时间过短");
+                mCaptureLayout.setTextWithAnimation(R.mipmap.ic_record_too_short);
                 mSwitchCamera.setVisibility(VISIBLE);
                 mFlashLamp.setVisibility(VISIBLE);
                 postDelayed(new Runnable() {

@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">CameraLibrary</string>
+    <string name="record_too_short">视频最少3秒</string>
+    <string name="camera_tip">点击拍照长按视频</string>
 </resources>

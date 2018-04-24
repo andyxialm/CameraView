@@ -6,11 +6,15 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.support.annotation.DrawableRes;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -92,7 +96,7 @@ public class CaptureLayout extends FrameLayout {
             layout_width = outMetrics.widthPixels / 2;
         }
         button_size = (int) (layout_width / 4.5f);
-        layout_height = button_size + (button_size / 5) * 2 + 100;
+        layout_height = button_size + (button_size / 5) * 2 + 200;
 
         initView();
         initEvent();
@@ -320,10 +324,10 @@ public class CaptureLayout extends FrameLayout {
         });
 
         txt_tip = new TextView(getContext());
-        LayoutParams txt_param = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        LayoutParams txt_param = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         txt_param.gravity = Gravity.CENTER_HORIZONTAL;
-        txt_param.setMargins(0, 0, 0, 0);
-        txt_tip.setText("轻触拍照，长按摄像");
+        txt_param.setMargins(0, 0, 0, 100);
+        //txt_tip.setText(R.string.camera_tip);
         txt_tip.setTextColor(0xFFFFFFFF);
         txt_tip.setGravity(Gravity.CENTER);
         txt_tip.setLayoutParams(txt_param);
@@ -369,8 +373,17 @@ public class CaptureLayout extends FrameLayout {
 
     public void setTextWithAnimation(String tip) {
         txt_tip.setText(tip);
-        ObjectAnimator animator_txt_tip = ObjectAnimator.ofFloat(txt_tip, "alpha", 0f, 1f, 1f, 0f);
-        animator_txt_tip.setDuration(2500);
+        ObjectAnimator animator_txt_tip = ObjectAnimator.ofFloat(txt_tip, "alpha", 0f, 1f, 0f);
+        animator_txt_tip.setInterpolator(new AccelerateInterpolator());
+        animator_txt_tip.setDuration(2000);
+        animator_txt_tip.start();
+    }
+
+    public void setTextWithAnimation(@DrawableRes int resId) {
+        txt_tip.setBackgroundResource(resId);
+        ObjectAnimator animator_txt_tip = ObjectAnimator.ofFloat(txt_tip, "alpha", 0f, 1f, 0f);
+        animator_txt_tip.setInterpolator(new AccelerateInterpolator());
+        animator_txt_tip.setDuration(2000);
         animator_txt_tip.start();
     }
 

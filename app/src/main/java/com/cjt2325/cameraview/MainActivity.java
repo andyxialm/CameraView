@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
 
         //6.0动态权限获取
         getPermissions();
+
     }
 
     @Override
