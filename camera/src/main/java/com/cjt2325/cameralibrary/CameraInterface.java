@@ -24,6 +24,7 @@ import android.view.SurfaceHolder;
 import android.widget.ImageView;
 
 import com.cjt2325.cameralibrary.listener.ErrorListener;
+import com.cjt2325.cameralibrary.listener.OnPreviewSizeChangedListener;
 import com.cjt2325.cameralibrary.util.AngleUtil;
 import com.cjt2325.cameralibrary.util.CameraParamUtil;
 import com.cjt2325.cameralibrary.util.CheckPermission;
@@ -100,6 +101,11 @@ public class CameraInterface implements Camera.PreviewCallback {
     //视频质量
     private int mediaQuality = JCameraView.MEDIA_QUALITY_MIDDLE;
     private SensorManager sm = null;
+
+    private OnPreviewSizeChangedListener onPreviewSizeChangedListener;
+
+    // 帧率
+    private int videoFrameRate = -1;
 
     //获取CameraInterface单例
     public static synchronized CameraInterface getInstance() {
@@ -376,6 +382,9 @@ public class CameraInterface implements Camera.PreviewCallback {
                 preview_width = previewSize.width;
                 preview_height = previewSize.height;
 
+                if (onPreviewSizeChangedListener != null) {
+                    onPreviewSizeChangedListener.onChanged(preview_width, preview_height);
+                }
                 mParams.setPictureSize(pictureSize.width, pictureSize.height);
 
                 if (CameraParamUtil.getInstance().isSupportedFocusMode(
@@ -521,6 +530,15 @@ public class CameraInterface implements Camera.PreviewCallback {
         if (mediaRecorder == null) {
             mediaRecorder = new MediaRecorder();
         }
+
+        try {
+            if (videoFrameRate >= 0) {
+                mediaRecorder.setVideoFrameRate(videoFrameRate);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         if (mParams == null) {
             mParams = mCamera.getParameters();
         }
@@ -543,10 +561,10 @@ public class CameraInterface implements Camera.PreviewCallback {
 
         Camera.Size videoSize;
         if (mParams.getSupportedVideoSizes() == null) {
-            videoSize = CameraParamUtil.getInstance().getPreviewSize(mParams.getSupportedPreviewSizes(), 600,
+            videoSize = CameraParamUtil.getInstance().getPreviewSize(mParams.getSupportedPreviewSizes(), 1000,
                     screenProp);
         } else {
-            videoSize = CameraParamUtil.getInstance().getPreviewSize(mParams.getSupportedVideoSizes(), 600,
+            videoSize = CameraParamUtil.getInstance().getPreviewSize(mParams.getSupportedVideoSizes(), 1000,
                     screenProp);
         }
         Log.i(TAG, "setVideoSize    width = " + videoSize.width + "height = " + videoSize.height);
@@ -776,5 +794,28 @@ public class CameraInterface implements Camera.PreviewCallback {
 
     void isPreview(boolean res) {
         this.isPreviewing = res;
+    }
+
+    /**
+     * 设置预览分辨率改变监听器
+     * @param l 监听器
+     */
+    public void setOnPreviewSizeChangedListener(OnPreviewSizeChangedListener l) {
+        this.onPreviewSizeChangedListener = l;
+    }
+
+    /**
+     * 设置录制帧率
+     * @param rate 帧率
+     */
+    public void setVideoFrameRate(int rate) {
+        if (rate < 0) {
+            return;
+        }
+        if (mediaRecorder != null) {
+            mediaRecorder.setVideoFrameRate(rate);
+        } else {
+            videoFrameRate = rate;
+        }
     }
 }

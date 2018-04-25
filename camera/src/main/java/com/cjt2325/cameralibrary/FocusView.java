@@ -2,6 +2,7 @@ package com.cjt2325.cameralibrary;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -34,11 +35,11 @@ public class FocusView extends View {
 
     public FocusView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        this.size = ScreenUtils.getScreenWidth(context) / 3;
+        this.size = ScreenUtils.getScreenWidth(context) / 4;
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mPaint.setDither(true);
-        mPaint.setColor(0xEE16AE16);
+        mPaint.setColor(Color.WHITE);
         mPaint.setStrokeWidth(4);
         mPaint.setStyle(Paint.Style.STROKE);
     }

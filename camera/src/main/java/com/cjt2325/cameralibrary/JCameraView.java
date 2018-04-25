@@ -205,9 +205,6 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
             }
         });
 
-        // 显示默认文案
-        mCaptureLayout.setTextWithAnimation(R.mipmap.ic_tip);
-
         //拍照 录像
         mCaptureLayout.setCaptureLisenter(new CaptureListener() {
             @Override
@@ -411,6 +408,8 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
             case MotionEvent.ACTION_UP:
                 firstTouch = true;
                 break;
+            default:
+                break;
         }
         return true;
     }
@@ -460,6 +459,11 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
     //设置CaptureButton功能（拍照和录像）
     public void setFeatures(int state) {
         this.mCaptureLayout.setButtonFeatures(state);
+
+        // 显示默认文案
+        if (state == JCameraView.BUTTON_STATE_BOTH) {
+            mCaptureLayout.setTextWithAnimation(R.mipmap.ic_tip);
+        }
     }
 
     //设置录制质量
@@ -551,7 +555,7 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
         captureBitmap = bitmap;
         mPhoto.setImageBitmap(bitmap);
         mPhoto.setVisibility(VISIBLE);
-        mCaptureLayout.startAlphaAnimation();
+        //mCaptureLayout.startAlphaAnimation();
         mCaptureLayout.startTypeBtnAnimator();
     }
 
@@ -675,6 +679,13 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
     }
 
     // ============== modify ================
+
+    /**
+     * 最短录制时间
+     */
+    public void setMinDuration(int minDuration) {
+        mCaptureLayout.setMinDuration(minDuration);
+    }
 
     /**
      * 停用自动闪光灯

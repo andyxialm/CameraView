@@ -375,7 +375,7 @@ public class CaptureLayout extends FrameLayout {
         txt_tip.setText(tip);
         ObjectAnimator animator_txt_tip = ObjectAnimator.ofFloat(txt_tip, "alpha", 0f, 1f, 0f);
         animator_txt_tip.setInterpolator(new AccelerateInterpolator());
-        animator_txt_tip.setDuration(2000);
+        animator_txt_tip.setDuration(3000);
         animator_txt_tip.start();
     }
 
@@ -383,12 +383,16 @@ public class CaptureLayout extends FrameLayout {
         txt_tip.setBackgroundResource(resId);
         ObjectAnimator animator_txt_tip = ObjectAnimator.ofFloat(txt_tip, "alpha", 0f, 1f, 0f);
         animator_txt_tip.setInterpolator(new AccelerateInterpolator());
-        animator_txt_tip.setDuration(2000);
+        animator_txt_tip.setDuration(3000);
         animator_txt_tip.start();
     }
 
     public void setDuration(int duration) {
         btn_capture.setDuration(duration);
+    }
+
+    public void setMinDuration(int minDuration) {
+        btn_capture.setMinDuration(minDuration);
     }
 
     public void setButtonFeatures(int state) {

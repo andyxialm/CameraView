@@ -11,12 +11,16 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.cjt2325.cameralibrary.CameraInterface;
 import com.cjt2325.cameralibrary.JCameraView;
 import com.cjt2325.cameralibrary.listener.JCameraListener;
 import com.cjt2325.cameralibrary.listener.OnBackClickListener;
+import com.cjt2325.cameralibrary.listener.OnPreviewSizeChangedListener;
 
 import java.io.File;
 
@@ -34,8 +38,13 @@ public class MainActivity extends AppCompatActivity {
 
         jCameraView = (JCameraView) findViewById(R.id.jcameraview);
 
+        jCameraView.setFeatures(JCameraView.BUTTON_STATE_BOTH);
+
         //设置视频保存路径
         jCameraView.setSaveVideoPath(Environment.getExternalStorageDirectory().getPath() + File.separator + "JCamera");
+
+        // 最短录制时间
+        jCameraView.setMinDuration(3 * 1000);
 
         //JCameraView监听
         jCameraView.setJCameraLisenter(new JCameraListener() {
@@ -74,6 +83,23 @@ public class MainActivity extends AppCompatActivity {
 
         // 视频模式 禁用裁切按钮
         jCameraView.disableCropButtonOnVideoMode(true);
+
+        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) jCameraView.getLayoutParams();
+        layoutParams.width = 1080;
+        layoutParams.height = 1920;
+        layoutParams.gravity = Gravity.CENTER;
+        layoutParams.setMargins(0, 0, 0, 60);
+        jCameraView.setLayoutParams(layoutParams);
+
+        CameraInterface.getInstance().setOnPreviewSizeChangedListener(new OnPreviewSizeChangedListener() {
+            @Override
+            public void onChanged(int width, int height) {
+                Log.d("fuckerman", "width: " + width + " height: " + height);
+            }
+        });
+
+        // 设置帧率
+        CameraInterface.getInstance().setVideoFrameRate(60);
 
         //6.0动态权限获取
         getPermissions();
